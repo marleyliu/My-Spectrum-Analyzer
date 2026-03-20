@@ -1,0 +1,84 @@
+from flask import Flask, jsonify
+from flask import request  
+from flask_cors import CORS 
+import numpy as np 
+import matplotlib.pyplot as plt
+
+
+app = Flask(__name__)
+cors = CORS(app, origins='*')
+
+
+class Sinewave: 
+
+    def __init__(self, amplitude, frequency, sampling_rate):
+        self.amplitude = amplitude 
+        self.frequency = frequency
+        self.sampling_rate = sampling_rate
+
+    def time_domain(self): 
+        amp = self.amplitude 
+        Fs = self.sampling_rate 
+        tstep = 1 / Fs
+        f0 = self.frequency
+
+        N = int(Fs / f0) 
+
+        t = np.linspace(0, (N-1)*tstep, N)
+
+        y = amp * np.sin(2*np.pi*f0*t)
+        return t, y
+        
+    def fft(self):
+
+        Fs = self.sampling_rate 
+
+        # call the other method
+        t, y = self.time_domain()
+
+        N = len(y)
+
+        X = np.fft.fft(y)
+
+        fstep = Fs / N
+        f = np.linspace(0, (N-1)*fstep, N)
+
+        return f, X, np.abs(X)/N
+
+@app.route("/api/users", methods = ['GET'])
+def users():
+    wave1 = Sinewave(2, 100, 2000)
+    t, y = wave1.time_domain()
+
+    f, X, X_mag = wave1.fft()
+
+    return jsonify({
+        "timedomain_t": t.tolist(),
+        "timedomain_y": y.tolist(),
+        "fft_f": f.tolist(),
+        "fft_Xmag": X_mag.tolist()
+    })
+
+@app.route("/api/signal", methods=["POST"])
+def generate_signal():
+
+    data = request.get_json()
+
+    amplitude = data.get("amplitude", 1)
+    frequency = data.get("frequency", 1)
+    sampling_rate = data.get("sampling_rate", 100)
+
+    wave = Sinewave(amplitude, frequency, sampling_rate)
+
+    t, y = wave.time_domain()
+    f, X, X_mag = wave.fft()
+
+    return jsonify({
+        "timedomain_t": t.tolist(),
+        "timedomain_y": y.tolist(),
+        "fft_f": f.tolist(),
+        "fft_Xmag": X_mag.tolist()
+    })
+
+if __name__ == "__main__":
+    app.run(debug = True, port = 8080)
