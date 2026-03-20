@@ -22,8 +22,10 @@ function App() {
   const [fft_f, setfftf] = useState([]);
   const [fft_Xmag, setfftX] = useState([]);
   const [amplitude, setAmplitude] = useState(2);
-const [frequency, setFrequency] = useState(100);
-const [samplingRate, setSamplingRate] = useState(2000);
+  const [frequency, setFrequency] = useState(100);
+  const [samplingRate, setSamplingRate] = useState(2000);
+  const [cycles, setCycles] = useState(1);
+  const [noiseAmp, setNoiseAmp] = useState(0);
 
  
   
@@ -32,6 +34,8 @@ const [samplingRate, setSamplingRate] = useState(2000);
     const response = await axios.get("http://localhost:8080/api/users")
     setTimedomainY(response.data.timedomain_y);
     setTimedomainT(response.data.timedomain_t); 
+    setfftf(response.data.fft_f);
+    setfftX(response.data.fft_Xmag);
     
     /*
     console.log(typeof response.data.timedomain_y[0]);
@@ -46,7 +50,9 @@ const [samplingRate, setSamplingRate] = useState(2000);
     const response = await axios.post("http://localhost:8080/api/signal", {
       amplitude: Number(amplitude),
       frequency: Number(frequency),
-      sampling_rate: Number(samplingRate)
+      sampling_rate: Number(samplingRate),
+      cycles: Number(cycles),
+      noise_amp: Number(noiseAmp)
     });
 
     setTimedomainY(response.data.timedomain_y);
@@ -65,8 +71,8 @@ const [samplingRate, setSamplingRate] = useState(2000);
     {
       label: "Time Signal",
       data: timedomain_y,
-      label: "Time Signal",
-      data: timedomain_y
+      pointRadius: 0,
+  borderWidth: 2
     }
   ]
 };
@@ -191,14 +197,29 @@ const fftOptions = {
     />
   </div>
 
+  <div style={{ marginBottom: "10px" }}>
+  <label>Cycles: </label>
+  <input
+    type="number"
+    value={cycles}
+    onChange={(e) => setCycles(e.target.value)}
+  />
+</div>
+
+<div style={{ marginBottom: "10px" }}>
+  <label>Noise Amplitude: </label>
+  <input
+    type="number"
+    value={noiseAmp}
+    onChange={(e) => setNoiseAmp(e.target.value)}
+  />
+</div>
+
   <button onClick={sendSignalRequest}>
     Generate Signal
   </button>
 
 </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }

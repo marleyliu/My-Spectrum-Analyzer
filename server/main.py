@@ -11,22 +11,29 @@ cors = CORS(app, origins='*')
 
 class Sinewave: 
 
-    def __init__(self, amplitude, frequency, sampling_rate):
+    def __init__(self, amplitude, frequency, sampling_rate, cycles, noise_amp):
         self.amplitude = amplitude 
         self.frequency = frequency
         self.sampling_rate = sampling_rate
+        self.cycles = cycles
+        self.noise_amp = noise_amp
 
     def time_domain(self): 
         amp = self.amplitude 
         Fs = self.sampling_rate 
         tstep = 1 / Fs
         f0 = self.frequency
+        cycles = self.cycles
+        noise_amp = self.noise_amp
 
-        N = int(Fs / f0) 
+
+        N = int((Fs / f0) *cycles) 
 
         t = np.linspace(0, (N-1)*tstep, N)
 
-        y = amp * np.sin(2*np.pi*f0*t)
+        signal = amp * np.sin(2*np.pi*f0*t)
+        noise = noise_amp * np.random.randn(N)
+        y = signal + noise 
         return t, y
         
     def fft(self):
@@ -47,7 +54,7 @@ class Sinewave:
 
 @app.route("/api/users", methods = ['GET'])
 def users():
-    wave1 = Sinewave(2, 100, 2000)
+    wave1 = Sinewave(2, 100, 2000, 1, 0)
     t, y = wave1.time_domain()
 
     f, X, X_mag = wave1.fft()
@@ -67,8 +74,10 @@ def generate_signal():
     amplitude = data.get("amplitude", 1)
     frequency = data.get("frequency", 1)
     sampling_rate = data.get("sampling_rate", 100)
+    cycles = data.get("cycles", 1)
+    noise_amp = data.get("noise_amp", 0)
 
-    wave = Sinewave(amplitude, frequency, sampling_rate)
+    wave = Sinewave(amplitude, frequency, sampling_rate, cycles, noise_amp)
 
     t, y = wave.time_domain()
     f, X, X_mag = wave.fft()
