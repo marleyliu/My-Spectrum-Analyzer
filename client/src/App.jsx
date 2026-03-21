@@ -9,9 +9,10 @@ import {
   LineElement,
   CategoryScale,
   LinearScale,
-  PointElement
+  PointElement,
+  Title 
 } from "chart.js";
-ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement);
+ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title);
 
 
 function App() {
@@ -92,6 +93,12 @@ const fft = {
 
 const timeOptions = {
   responsive: true,
+  plugins: {
+    title: {
+      display: true,
+      text: "Time Domain Signal"
+    }
+  },
   scales: {
     x: {
       title: {
@@ -120,6 +127,12 @@ const timeOptions = {
 
 const fftOptions = {
   responsive: true,
+  plugins: {
+    title: {
+      display: true,
+      text: "Frequency Domain (FFT)"
+    }
+  },
   scales: {
     x: {
       title: {
