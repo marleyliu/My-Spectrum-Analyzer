@@ -22,8 +22,9 @@ function App() {
   const [timedomain_t, setTimedomainT] = useState([]);
   const [fft_f, setfftf] = useState([]);
   const [fft_Xmag, setfftX] = useState([]);
-  const [amplitude, setAmplitude] = useState(2);
-  const [frequency, setFrequency] = useState(100);
+  /*const [amplitude, setAmplitude] = useState(2);
+  const [frequency, setFrequency] = useState(100);*/
+  const [tones, setTones] = useState([{"amplitude": 2, "frequency": 100}]);
   const [samplingRate, setSamplingRate] = useState(2000);
   const [cycles, setCycles] = useState(1);
   const [noiseAmp, setNoiseAmp] = useState(0);
@@ -49,8 +50,10 @@ function App() {
   const sendSignalRequest = async () => {
   try {
     const response = await axios.post("http://localhost:8080/api/signal", {
-      amplitude: Number(amplitude),
-      frequency: Number(frequency),
+      tones: tones.map(t => ({
+        amplitude: Number(t.amplitude),
+        frequency: Number(t.frequency)
+      })),
       sampling_rate: Number(samplingRate),
       cycles: Number(cycles),
       noise_amp: Number(noiseAmp)
@@ -64,6 +67,21 @@ function App() {
   } catch (error) {
     console.error(error);
   }
+};
+
+const addTone = () => {
+  setTones([...tones, { amplitude: 1, frequency: 100 }]);
+};
+
+const updateTone = (index, field, value) => {
+  const newTones = [...tones];
+  newTones[index][field] = value;
+  setTones(newTones);
+};
+
+const removeTone = (index) => {
+  const newTones = tones.filter((_, i) => i !== index);
+  setTones(newTones);
 };
 
    const timedomain = {
@@ -182,12 +200,42 @@ const fftOptions = {
       </div>
 
     <div style={{ marginTop: "20px" }}>
-  
+
+      <h3>Tones</h3>
+
+  {tones.map((tone, index) => (
+    <div key={index} style={{ marginBottom: "10px" }}>
+      
+      <label>Amplitude: </label>
+      <input
+        type="number"
+        value={tone.amplitude}
+        onChange={(e) => updateTone(index, "amplitude", e.target.value)}
+      />
+
+      <label style={{ marginLeft: "10px" }}>Frequency: </label>
+      <input
+        type="number"
+        value={tone.frequency}
+        onChange={(e) => updateTone(index, "frequency", e.target.value)}
+      />
+
+      <button 
+        onClick={() => removeTone(index)} 
+        style={{ marginLeft: "10px" }}
+      >
+        Remove
+      </button>
+</div>
+  ))}
+
+  <button onClick={addTone}>+ Add Tone</button>
+  {/*
   <div style={{ marginBottom: "10px" }}>
     <label>Amplitude: </label>
     <input
       type="number"
-      value={amplitude}
+      value={tones.amplitude}
       onChange={(e) => setAmplitude(e.target.value)}
     />
   </div>
@@ -196,10 +244,10 @@ const fftOptions = {
     <label>Frequency: </label>
     <input
       type="number"
-      value={frequency}
+      value={tones.frequency}
       onChange={(e) => setFrequency(e.target.value)}
     />
-  </div>
+  </div> */}
 
   <div style={{ marginBottom: "10px" }}>
     <label>Sampling Rate: </label>
