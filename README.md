@@ -26,15 +26,16 @@ Users can create custom signals by combining multiple tones, adjusting parameter
 
 ### Frontend
 - React (Vite)
+- Javascript
+- HTML (JSX) 
 - Chart.js (for plotting graphs)
 
 ### Backend
 - Flask (Python)
 - NumPy (signal generation & FFT)
 
-<!-- TODO: Add any additional libraries or tools you used -->
 
-# 📡 Signal Visualizer (React + Flask)
+# Signal Visualizer (React + Flask)
 
 An interactive web application that allows users to generate and visualize signals in both the time domain and frequency domain.
 
@@ -42,7 +43,7 @@ Users can create custom signals by combining multiple tones, adjusting parameter
 
 ---
 
-## 🚀 Features
+## Features
 
 - Generate sine waves with customizable:
   - Amplitude
@@ -60,7 +61,7 @@ Users can create custom signals by combining multiple tones, adjusting parameter
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 - React (Vite)
@@ -74,7 +75,7 @@ Users can create custom signals by combining multiple tones, adjusting parameter
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation & Setup
 
 ### 1. Clone the repository
 
@@ -82,9 +83,9 @@ Users can create custom signals by combining multiple tones, adjusting parameter
 git clone https://github.com/marleyliu/My-Spectrum-Analyzer.git
 cd react-vite-flask
 
-**### Backend Setup**
+## Backend Setup
 cd server
 python -m venv venv
 source venv/bin/activate   # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
-python app.py
+python main.py
