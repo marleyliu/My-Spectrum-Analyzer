@@ -79,8 +79,12 @@ Users can create custom signals by combining multiple tones, adjusting parameter
 ### 1. Clone the repository
 
 ```bash
-git clone 
+git clone https://github.com/marleyliu/My-Spectrum-Analyzer.git
 cd react-vite-flask
 
-
-## 📂 Project Structure
+**### Backend Setup**
+cd server
+python -m venv venv
+source venv/bin/activate   # or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+python app.py
